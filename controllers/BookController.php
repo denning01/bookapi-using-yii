@@ -6,6 +6,8 @@ use yii\rest\ActiveController;
 use yii\data\ActiveDataProvider;
 use Yii;
 use app\models\Book;
+use yii\filters\ContentNegotiator;
+use yii\web\Response;
 
 class BookController extends ActiveController
 {
@@ -14,10 +16,26 @@ class BookController extends ActiveController
     public function actions()
     {
         $actions = parent::actions();
-        // Disable default index action so we can customize it
-        unset($actions['index']);
+        unset($actions['index']); // override index
         return $actions;
     }
+    //added this action 
+    //start
+    public function behaviors()
+{
+    $behaviors = parent::behaviors();
+
+    // Add content negotiation to always return JSON
+    $behaviors['contentNegotiator'] = [
+        'class' => ContentNegotiator::class,
+        'formats' => [
+            'application/json' => Response::FORMAT_JSON,
+        ],
+    ];
+
+    return $behaviors;
+}
+    //end
 
     public function actionIndex()
     {
@@ -39,9 +57,17 @@ class BookController extends ActiveController
             $query->andWhere(['like', 'title', $title]);
         }
 
-        return [
-            'success' => true,
-            'data' => $query->all()
-        ];
+        // ActiveDataProvider for pagination
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 5, // number of books per page
+            ],
+            'sort' => [
+            'defaultOrder' => ['id' => SORT_ASC],
+            ],
+        ]);
+
+        return $dataProvider;
     }
 }
