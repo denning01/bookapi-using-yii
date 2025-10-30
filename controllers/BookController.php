@@ -1,6 +1,8 @@
 <?php
 
 namespace app\controllers;
+
+//adds this line
 use app\components\JwtHttpBearerAuth;
 
 

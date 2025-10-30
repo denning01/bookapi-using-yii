@@ -7,6 +7,22 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    //adds this to allow fetching in the frontend
+//it starts here
+    'bootstrap' => ['log'],
+    'as cors' => [
+    'class' => \yii\filters\Cors::class,
+    'cors' => [
+        'Origin' => ['http://localhost:3000'], // React app URL
+        'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        'Access-Control-Allow-Credentials' => true,
+        'Access-Control-Allow-Headers' => ['Authorization', 'Content-Type'],
+    ],
+],
+
+
+
+    ///this ends here
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -48,7 +64,7 @@ $config = [
 
         //added this 
 
-        'urlManager' => [
+       'urlManager' => [
     'enablePrettyUrl' => true,
     'enableStrictParsing' => false,
     'showScriptName' => false,
@@ -65,8 +81,8 @@ $config = [
         // ==========================
         [
             'class' => 'yii\rest\UrlRule',
-            'controller' => ['book'],   // e.g. BookController
-            'pluralize' => true,        // /books instead of /book
+            'controller' => ['book'],
+            'pluralize' => true,  // /books instead of /book
         ],
 
         // ==========================
@@ -75,6 +91,7 @@ $config = [
         'GET about' => 'site/about',
     ],
 ],
+
 // ],removes this one 
     ],
     'params' => $params,
