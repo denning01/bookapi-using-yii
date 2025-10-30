@@ -1,13 +1,19 @@
 <?php
 
 namespace app\controllers;
+use app\components\JwtHttpBearerAuth;
+
 
 use yii\rest\ActiveController;
 use yii\data\ActiveDataProvider;
 use Yii;
 use app\models\Book;
+use app\models\User;
 use yii\filters\ContentNegotiator;
 use yii\web\Response;
+use yii\filters\auth\HttpBearerAuth;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 class BookController extends ActiveController
 {
@@ -20,26 +26,27 @@ class BookController extends ActiveController
         return $actions;
     }
 
+    public function behaviors()
+{
+    $behaviors = parent::behaviors();
 
-    //added this action 
-    //start
-   public function behaviors()
-    {
-        $behaviors = parent::behaviors();
+    // Force JSON response
+    $behaviors['contentNegotiator'] = [
+        'class' => \yii\filters\ContentNegotiator::class,
+        'formats' => [
+            'application/json' => \yii\web\Response::FORMAT_JSON,
+        ],
+    ];
 
-        // Require authentication
-        $behaviors['authenticator'] = [
-            'class' => \yii\filters\auth\HttpBearerAuth::class,
-        ];
+    // Use our custom JWT authenticator
+    $behaviors['authenticator'] = [
+        'class' => JwtHttpBearerAuth::class,
+    ];
 
-        return $behaviors;
-    }
+    return $behaviors;
+}
 
-
-//end
-
-
-
+    // ✅ Books listing with filtering
     public function actionIndex()
     {
         $query = Book::find();
@@ -60,14 +67,14 @@ class BookController extends ActiveController
             $query->andWhere(['like', 'title', $title]);
         }
 
-        // ActiveDataProvider for pagination
+        // Paginate & sort
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 5, // number of books per page
+                'pageSize' => 5,
             ],
             'sort' => [
-            'defaultOrder' => ['id' => SORT_ASC],
+                'defaultOrder' => ['id' => SORT_ASC],
             ],
         ]);
 

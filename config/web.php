@@ -49,14 +49,33 @@ $config = [
         //added this 
 
         'urlManager' => [
-        'enablePrettyUrl' => true,
-        'enableStrictParsing' => false,
-        'showScriptName' => false,
-        'rules' => [
-        // REST API routes
-        ['class' => 'yii\rest\UrlRule', 'controller' => ['auth']],
+    'enablePrettyUrl' => true,
+    'enableStrictParsing' => false,
+    'showScriptName' => false,
+    'rules' => [
+        // ==========================
+        // AUTHENTICATION ROUTES
+        // ==========================
+        'POST auth/signup' => 'auth/signup',
+        'POST auth/login' => 'auth/login',
+        'GET auth/verify' => 'auth/verify',
+
+        // ==========================
+        // BOOKS API ROUTES (REST)
+        // ==========================
+        [
+            'class' => 'yii\rest\UrlRule',
+            'controller' => ['book'],   // e.g. BookController
+            'pluralize' => true,        // /books instead of /book
+        ],
+
+        // ==========================
+        // ABOUT PAGE (WEB)
+        // ==========================
+        'GET about' => 'site/about',
     ],
 ],
+// ],removes this one 
     ],
     'params' => $params,
 ];
