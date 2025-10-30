@@ -19,23 +19,26 @@ class BookController extends ActiveController
         unset($actions['index']); // override index
         return $actions;
     }
+
+
     //added this action 
     //start
-    public function behaviors()
-{
-    $behaviors = parent::behaviors();
+   public function behaviors()
+    {
+        $behaviors = parent::behaviors();
 
-    // Add content negotiation to always return JSON
-    $behaviors['contentNegotiator'] = [
-        'class' => ContentNegotiator::class,
-        'formats' => [
-            'application/json' => Response::FORMAT_JSON,
-        ],
-    ];
+        // Require authentication
+        $behaviors['authenticator'] = [
+            'class' => \yii\filters\auth\HttpBearerAuth::class,
+        ];
 
-    return $behaviors;
-}
-    //end
+        return $behaviors;
+    }
+
+
+//end
+
+
 
     public function actionIndex()
     {

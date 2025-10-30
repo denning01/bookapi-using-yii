@@ -50,10 +50,11 @@ $config = [
 
         'urlManager' => [
         'enablePrettyUrl' => true,
-        'enableStrictParsing' => true,
+        'enableStrictParsing' => false,
         'showScriptName' => false,
         'rules' => [
-        ['class' => 'yii\rest\UrlRule', 'controller' => 'book'],
+        // REST API routes
+        ['class' => 'yii\rest\UrlRule', 'controller' => ['auth']],
     ],
 ],
     ],
